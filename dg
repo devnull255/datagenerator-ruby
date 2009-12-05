@@ -49,7 +49,39 @@ usage = 'Usage: dg [-n] <fieldName>[:length]
          specialField1
          specialField2
          specialField3
-         specialField4'
+         specialField4
+         cycle:value1,value2,...
+         concat:dgmethod[(args)]|value,dgmethod[(args)]|value,...'
+
+def concat(list_expression)
+    dg = DataGenerator.new
+    s = ''
+    expressions = list_expression.split('+')
+    expressions.each do |expression|
+        (method_name, arg_expression) = expression.split('(')
+#        p method_name
+#        p arg_expression
+        m = method_name.intern
+        if DataGenerator.method_defined?(m)
+           if arg_expression != nil
+             arg = arg_expression.sub(')','')
+           end
+           if method_name == 'cycle'
+              s +=  dg.cycle(arg)
+           else
+              if dg.method(m).arity == 0
+                 s += dg.method(m).call
+              else 
+                s +=  dg.method(m).call(arg.to_i)
+              end
+           end
+        else
+           s += method_name
+        end          
+    end
+#    list_expression 
+     s
+end
 if ARGV.length == 0
    puts usage
    exit
@@ -69,6 +101,11 @@ if ARGV[0] != ''
    numRecs.times do
    ARGV.each do |arg|
       (arg_method,arg_arg) = arg.split(/:/)
+      if arg.include?('concat')
+         field = concat(arg_arg)
+         record.push(field)
+         next
+      end
       symbol = arg_method.intern
       if DataGenerator.method_defined?(symbol)
          if d.method(symbol).arity > 0
