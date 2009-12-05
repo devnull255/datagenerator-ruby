@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby 
+require 'datagenerator'
+##############################################################
+# dg - DataGenerator built in ruby
+# Creates pipe-delimited test data based on arguments passed from the command # line.
+# Usage: dg [-n] fieldName[:length]
+# Vaild Fields:
+# firstName
+# lastName
+# alpha:len
+# numeric:len
+# ssn
+# phone
+# zipcode
+# email
+# specialField1
+# specialField2
+# specialField3
+# specialField4
+##############################################################
+d = DataGenerator.new
+##############################################################
+# For debug, test DataGenerator methods
+##############################################################
+#p d.firstName
+#d.firstNames.push("Paul")
+#p d.firstNames
+#p d.alpha(20)
+#p d.numeric(20)
+#p d.ssn
+#p d.specialField1
+#d.specialFields1.push('what')
+#d.specialFields1.push('huh?')
+#p d.specialField1
+#p d.phone
+#p d.zipcode
+#p d.dateWithin(100)
+#p d.email
+usage = 'Usage: dg [-n] <fieldName>[:length]
+         fieldName may be one of the following:
+         firstName
+         lastName
+         alpha:len
+         numeric:len
+         ssn
+         phone
+         zipcode
+         email
+         specialField1
+         specialField2
+         specialField3
+         specialField4'
+if ARGV.length == 0
+   puts usage
+   exit
+end
+if ARGV[0] != ''
+#   p ARGV.length
+   record = []
+   if ARGV[0] == '-n'
+      numRecs = ARGV[1].to_i
+      ARGV.shift
+      ARGV.shift
+   else
+      numRecs = 10
+   end
+   history = File.new("dghistory.txt","a")
+   history.write("#{ARGV.join(' ')}\n")
+   numRecs.times do
+   ARGV.each do |arg|
+      (arg_method,arg_arg) = arg.split(/:/)
+      symbol = arg_method.intern
+      if DataGenerator.method_defined?(symbol)
+         if d.method(symbol).arity > 0
+            if symbol == :value 
+               field = d.value(arg_arg)
+            else
+               if symbol == :cycle
+                  field = d.cycle(arg_arg)
+               else
+                  field =  d.method(symbol).call(arg_arg.to_i)
+               end
+            end
+            record.push(field)
+         else
+            field =  d.method(symbol).call
+            record.push(field)
+         end
+      end
+   end
+   puts record.join('|')
+   record.clear
+   end
+end
