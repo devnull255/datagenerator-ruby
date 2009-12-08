@@ -17,6 +17,9 @@ require 'datagenerator'
 # specialField2
 # specialField3
 # specialField4
+# will not have to use special fields with cycle
+# added concat to perform special concatenations using standard
+# field generators
 ##############################################################
 d = DataGenerator.new
 ##############################################################
