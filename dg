@@ -17,6 +17,7 @@ require 'datagenerator'
 # specialField2
 # specialField3
 # specialField4
+# add this right here
 ##############################################################
 d = DataGenerator.new
 ##############################################################
