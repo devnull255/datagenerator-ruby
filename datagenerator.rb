@@ -2,6 +2,8 @@
 require 'date'
 ##############################################################
 #DataGenerator Class
+# This is a test data generator class I use to generate
+# test data that looks like real data.
 ##############################################################
 class DataGenerator
    def initialize
