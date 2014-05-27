@@ -1,0 +1,8 @@
+GEM
+  remote: https://github.com/devnull255/datagenerator-ruby/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
